@@ -74,12 +74,17 @@ var path           = require('path'),
                     files: ['<%= paths.adminAssets %>/sass/**/*'],
                     tasks: ['sass:admin']
                 },
+                react: {
+                    files: ['core/client/components/*.jsx'],
+                    tasks: ['react']
+                },
                 concat: {
                     files: [
                         'core/client/*.js',
                         'core/client/helpers/*.js',
                         'core/client/models/*.js',
                         'core/client/tpl/*.js',
+                        'core/client/components/*.js',
                         'core/client/views/*.js'
                     ],
                     tasks: ['concat']
@@ -311,6 +316,16 @@ var path           = require('path'),
                 }
             },
 
+            react: {
+                files: {
+                    expand: true,
+                    cwd: 'core/client/components/',
+                    src: ['**/*.jsx'],
+                    dest: 'core/client/components/',
+                    ext: '.js'
+                }
+            },
+
             // ### Config for grunt-groc
             // Generate documentation from code
             groc: {
@@ -376,6 +391,7 @@ var path           = require('path'),
                 dev: {
                     files: {
                         'core/built/scripts/vendor.js': [
+                            'core/shared/vendor/react-with-addons-0.8.0.js',
                             'core/shared/vendor/jquery/jquery.js',
                             'core/shared/vendor/jquery/jquery-ui-1.10.3.custom.min.js',
                             'core/client/assets/lib/jquery-utils.js',
@@ -423,6 +439,7 @@ var path           = require('path'),
                         ],
 
                         'core/built/scripts/views.js': [
+                            'core/client/components/**/*.js',
                             'core/client/views/**/*.js',
                             'core/client/router.js'
                         ]
@@ -431,6 +448,7 @@ var path           = require('path'),
                 prod: {
                     files: {
                         'core/built/scripts/ghost.js': [
+                            'core/shared/vendor/react-with-addons-0.8.0.min.js',
                             'core/shared/vendor/jquery/jquery.js',
                             'core/shared/vendor/jquery/jquery-ui-1.10.3.custom.min.js',
                             'core/client/assets/lib/jquery-utils.js',
@@ -469,6 +487,8 @@ var path           = require('path'),
                             'core/client/tpl/hbs-tpl.js',
 
                             'core/client/models/**/*.js',
+
+                            'core/client/components/**/*.js',
 
                             'core/client/views/**/*.js',
 
@@ -794,6 +814,7 @@ var path           = require('path'),
                 'shell:bourbon',
                 'sass:compress',
                 'handlebars',
+                'react',
                 'concat',
                 'uglify',
                 'clean:release',
@@ -806,6 +827,7 @@ var path           = require('path'),
             [
                 'sass:admin',
                 'handlebars',
+                'react',
                 'concat',
                 'express:dev',
                 'watch'
@@ -850,10 +872,10 @@ var path           = require('path'),
         grunt.registerTask('init', 'Prepare the project for development', ['shell:bourbon', 'default']);
 
         // Before running in production mode
-        grunt.registerTask('prod', 'Build CSS, JS & templates for production', ['sass:compress', 'handlebars', 'concat', 'uglify']);
+        grunt.registerTask('prod', 'Build CSS, JS & templates for production', ['sass:compress', 'handlebars', 'react', 'concat', 'uglify']);
 
         // When you just say 'grunt'
-        grunt.registerTask('default', 'Build CSS, JS & templates for development', ['update_submodules', 'sass:compress', 'handlebars', 'concat']);
+        grunt.registerTask('default', 'Build CSS, JS & templates for development', ['update_submodules', 'sass:compress', 'handlebars', 'react', 'concat']);
     };
 
 module.exports = configureGrunt;
